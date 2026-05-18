@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoropedia Ultra</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+-webkit-tap-highlight-color:transparent;
+}
+
+body{
+background:#060b1f;
+color:white;
+overflow-x:hidden;
+}
+
+.page{
+display:none;
+padding:18px;
+padding-bottom:120px;
+min-height:100vh;
+}
+
+.active{
+display:block;
+}
+
+header{
+position:sticky;
+top:0;
+z-index:999;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,.7);
+backdrop-filter:blur(12px);
+}
+
+.logo{
+font-size:26px;
+font-weight:bold;
+color:#ff4fd8;
+text-shadow:0 0 15px #ff4fd8;
+}
+
+.saldo{
+padding:10px 16px;
+border-radius:15px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
+font-weight:bold;
+}
+
+.card{
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(14px);
+padding:18px;
+border-radius:24px;
+margin-bottom:18px;
+}
+
+.title{
+font-size:24px;
+font-weight:bold;
+margin-bottom:16px;
+color:#ff4fd8;
+}
+
+.games,
+.dmGrid,
+.payments,
+.bankGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+}
+
+.game,
+.dm,
+.pay,
+.bank{
+background:#0b1635;
+padding:16px;
+border-radius:18px;
+text-align:center;
+cursor:pointer;
+transition:.2s;
+border:2px solid transparent;
+}
+
+.game.active,
+.dm.active,
+.pay.active,
+.bank.active{
+border:2px solid cyan;
+box-shadow:0 0 18px cyan;
+}
+
+.pay img{
+width:65px;
+height:65px;
+background:white;
+padding:8px;
+border-radius:15px;
+object-fit:contain;
+margin-bottom:10px;
+}
+
+input{
+width:100%;
+padding:15px;
+border:none;
+outline:none;
+border-radius:16px;
+background:#0b1635;
+color:white;
+margin-top:12px;
+}
+
+.btn{
+width:100%;
+padding:18px;
+border:none;
+border-radius:18px;
+margin-top:18px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+background:linear-gradient(45deg,#ff00ea,#00d9ff);
+color:white;
+}
+
+.btn:active{
+transform:scale(.95);
+}
+
+.bottom{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+padding:14px;
+display:flex;
+justify-content:space-around;
+background:rgba(0,0,0,.8);
+backdrop-filter:blur(14px);
+z-index:99999;
+}
+
+.bottom button{
+background:none;
+border:none;
+color:white;
+font-size:14px;
+cursor:pointer;
+}
+
+.history{
+background:#0b1635;
+padding:14px;
+border-radius:15px;
+margin-top:10px;
+}
+
+.success{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#070b1d;
+z-index:999999;
+overflow:auto;
+padding:20px;
+}
+
+.successBox{
+max-width:420px;
+margin:auto;
+margin-top:40px;
+background:linear-gradient(180deg,#28104a,#10192e);
+padding:30px;
+border-radius:28px;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+margin-top:18px;
+}
+
+.big{
+font-size:45px;
+font-weight:bold;
+margin-top:20px;
+}
+
+.profile{
+text-align:center;
+}
+
+.profile img{
+width:110px;
+height:110px;
+border-radius:50%;
+object-fit:cover;
+border:4px solid cyan;
+margin-bottom:12px;
+}
+
+.slotArea{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:6px;
+margin-top:18px;
+}
+
+.slot{
+height:65px;
+border-radius:12px;
+background:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+color:black;
+}
+
+.spinBtn{
+width:110px;
+height:110px;
+border-radius:50%;
+border:none;
+margin-top:22px;
+background:linear-gradient(45deg,#ff9500,#ff00ff);
+color:white;
+font-size:24px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.qris{
+width:100%;
+margin-top:18px;
+border-radius:18px;
+}
+
+.popup{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+background:#00ff95;
+color:black;
+padding:15px 24px;
+border-radius:18px;
+display:none;
+z-index:999999;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="popup" id="popup">
+🎁 Bonus Harian Berhasil
+</div>
+
+<header>
+
+<div class="logo">
+ZOROPEDIA
+</div>
+
+<div class="saldo" id="saldoText">
+Rp500.000
+</div>
+
+</header>
+
+<!-- HOME -->
+
+<div class="page active" id="home">
+
+<div class="card">
+
+<div class="title">
+🏠 Home
+</div>
+
+<p>
+Topup game, transfer fake, slot arcade, QRIS dan lainnya.
+</p>
+
+<button class="btn" onclick="showPage('topup')">
+MASUK TOPUP
+</button>
+
+<button class="btn" onclick="showPage('slotPage')">
+MAIN SLOT
+</button>
+
+</div>
+
+</div>
+
+<!-- TOPUP -->
+
+<div class="page" id="topup">
+
+<div class="card">
+
+<div class="title">
+🎮 Pilih Game
+</div>
+
+<div class="games">
+
+<div class="game active" onclick="pickGame(this,'Free Fire')">
+🔥 Free Fire
+</div>
+
+<div class="game" onclick="pickGame(this,'Mobile Legends')">
+⚔️ MLBB
+</div>
+
+<div class="game" onclick="pickGame(this,'PUBG')">
+🎯 PUBG
+</div>
+
+<div class="game" onclick="pickGame(this,'Valorant')">
+💎 Valorant
+</div>
+
+<div class="game" onclick="pickGame(this,'Genshin Impact')">
+🌌 Genshin
+</div>
+
+<div class="game" onclick="pickGame(this,'Roblox')">
+🧱 Roblox
+</div>
+
+</div>
+
+<input id="playerName" placeholder="Nama Player">
+<input id="playerId" placeholder="ID Player">
+
+</div>
+
+<div class="card">
+
+<div class="title">
+💎 Pilih Diamond
+</div>
+
+<div class="dmGrid">
+
+<div class="dm active" onclick="pickDM(this,5,1000)">
+5 DM<br>Rp1.000
+</div>
+
+<div class="dm" onclick="pickDM(this,70,10000)">
+70 DM<br>Rp10.000
+</div>
+
+<div class="dm" onclick="pickDM(this,140,20000)">
+140 DM<br>Rp20.000
+</div>
+
+<div class="dm" onclick="pickDM(this,355,50000)">
+355 DM<br>Rp50.000
+</div>
+
+<div class="dm" onclick="pickDM(this,720,100000)">
+720 DM<br>Rp100.000
+</div>
+
+<div class="dm" onclick="pickDM(this,80830,5000000)">
+80830 DM<br>Rp5.000.000
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="title">
+💳 Pembayaran
+</div>
+
+<div class="payments">
+
+<div class="pay active" onclick="pickPay(this,'OVO')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg">
+OVO
+</div>
+
+<div class="pay" onclick="pickPay(this,'DANA')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg">
+DANA
+</div>
+
+<div class="pay" onclick="pickPay(this,'GoPay')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg">
+GoPay
+</div>
+
+<div class="pay" onclick="pickPay(this,'ShopeePay')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg">
+ShopeePay
+</div>
+
+<div class="pay" onclick="pickPay(this,'QRIS')">
+<img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/QRIS_logo.svg">
+QRIS
+</div>
+
+<div class="pay" onclick="pickPay(this,'Bank Transfer')">
+<img src="https://cdn-icons-png.flaticon.com/512/2830/2830284.png">
+Bank
+</div>
+
+</div>
+
+<img class="qris"
+src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=ZOROPEDIA">
+
+<button class="btn" onclick="buyNow()">
+BELI SEKARANG
+</button>
+
+</div>
+
+</div>
+
+<!-- TRANSFER -->
+
+<div class="page" id="transfer">
+
+<div class="card">
+
+<div class="title">
+🏦 Fake Transfer
+</div>
+
+<div class="bankGrid">
+
+<div class="bank active" onclick="pickBank(this,'BCA')">
+🏦 BCA
+</div>
+
+<div class="bank" onclick="pickBank(this,'BRI')">
+🏦 BRI
+</div>
+
+<div class="bank" onclick="pickBank(this,'BNI')">
+🏦 BNI
+</div>
+
+<div class="bank" onclick="pickBank(this,'MANDIRI')">
+🏦 Mandiri
+</div>
+
+</div>
+
+<input id="tfNama" placeholder="Nama Penerima">
+<input id="tfNominal" placeholder="Nominal Transfer">
+
+<button class="btn" onclick="fakeTransfer()">
+TRANSFER
+</button>
+
+</div>
+
+</div>
+
+<!-- SLOT -->
+
+<div class="page" id="slotPage">
+
+<div class="card" style="text-align:center;">
+
+<div class="title">
+🎰 Mahjong Slot
+</div>
+
+<h2 id="slotSaldo">
+Saldo Slot: Rp500.000
+</h2>
+
+<div class="slotArea" id="slotArea"></div>
+
+<button class="spinBtn" onclick="spinSlot()">
+SPIN
+</button>
+
+</div>
+
+</div>
+
+<!-- RIWAYAT -->
+
+<div class="page" id="riwayat">
+
+<div class="card">
+
+<div class="title">
+📜 Riwayat
+</div>
+
+<div id="historyList"></div>
+
+</div>
+
+</div>
+
+<!-- AKUN -->
+
+<div class="page" id="akun">
+
+<div class="card profile">
+
+<div class="title">
+👤 Profil
+</div>
+
+<img id="profileImg"
+src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+<input type="file" accept="image/*"
+onchange="changePhoto(event)">
+
+<input id="customName"
+placeholder="Nama Custom">
+
+<button class="btn" onclick="saveProfile()">
+SIMPAN PROFIL
+</button>
+
+<button class="btn">
+Login Google
+</button>
+
+<button class="btn">
+Login Facebook
+</button>
+
+<button class="btn" onclick="claimDaily()">
+🎁 Misi Harian
+</button>
+
+</div>
+
+</div>
+
+<!-- SUCCESS -->
+
+<div class="success" id="successPage">
+
+<div class="successBox">
+
+<div style="color:#00ff95;font-size:24px;">
+Transaksi Berhasil
+</div>
+
+<div class="big" id="sHarga">
+Rp20.000
+</div>
+
+<div class="row">
+<div>Game</div>
+<div id="sGame"></div>
+</div>
+
+<div class="row">
+<div>Diamond</div>
+<div id="sDM"></div>
+</div>
+
+<div class="row">
+<div>Metode</div>
+<div id="sPay"></div>
+</div>
+
+<div class="row">
+<div>Player</div>
+<div id="sPlayer"></div>
+</div>
+
+<div class="row">
+<div>ID</div>
+<div id="sId"></div>
+</div>
+
+<div class="row">
+<div>No. Transaksi</div>
+<div id="sTrx"></div>
+</div>
+
+<button class="btn"
+onclick="closeSuccess()">
+SELESAI
+</button>
+
+</div>
+
+</div>
+
+<!-- NAV -->
+
+<div class="bottom">
+
+<button onclick="showPage('home')">
+🏠<br>Home
+</button>
+
+<button onclick="showPage('topup')">
+💎<br>Topup
+</button>
+
+<button onclick="showPage('transfer')">
+🏦<br>Transfer
+</button>
+
+<button onclick="showPage('slotPage')">
+🎰<br>Slot
+</button>
+
+<button onclick="showPage('riwayat')">
+📜<br>Riwayat
+</button>
+
+<button onclick="showPage('akun')">
+👤<br>Akun
+</button>
+
+</div>
+
+<script>
+
+let saldo = 500000;
+
+let selectedGame = "Free Fire";
+let selectedDM = 5;
+let selectedHarga = 1000;
+let selectedPay = "OVO";
+let selectedBank = "BCA";
+
+updateSaldo();
+
+function updateSaldo(){
+
+document.getElementById("saldoText")
+.innerHTML =
+"Rp" + saldo.toLocaleString("id-ID");
+
+document.getElementById("slotSaldo")
+.innerHTML =
+"Saldo Slot: Rp" +
+saldo.toLocaleString("id-ID");
+
+}
+
+/* PAGE */
+
+function showPage(id){
+
+document.querySelectorAll(".page")
+.forEach(p=>{
+p.classList.remove("active");
+});
+
+document.getElementById(id)
+.classList.add("active");
+
+sound();
+
+}
+
+/* GAME */
+
+function pickGame(el,game){
+
+document.querySelectorAll(".game")
+.forEach(g=>{
+g.classList.remove("active");
+});
+
+el.classList.add("active");
+
+selectedGame = game;
+
+sound();
+
+}
+
+/* DM */
+
+function pickDM(el,dm,harga){
+
+document.querySelectorAll(".dm")
+.forEach(d=>{
+d.classList.remove("active");
+});
+
+el.classList.add("active");
+
+selectedDM = dm;
+selectedHarga = harga;
+
+sound();
+
+}
+
+/* PAY */
+
+function pickPay(el,pay){
+
+document.querySelectorAll(".pay")
+.forEach(p=>{
+p.classList.remove("active");
+});
+
+el.classList.add("active");
+
+selectedPay = pay;
+
+sound();
+
+}
+
+/* BANK */
+
+function pickBank(el,bank){
+
+document.querySelectorAll(".bank")
+.forEach(b=>{
+b.classList.remove("active");
+});
+
+el.classList.add("active");
+
+selectedBank = bank;
+
+sound();
+
+}
+
+/* BUY */
+
+function buyNow(){
+
+if(saldo < selectedHarga){
+
+alert("Saldo tidak cukup");
+
+return;
+
+}
+
+saldo -= selectedHarga;
+
+updateSaldo();
+
+document.getElementById("successPage")
+.style.display = "block";
+
+document.getElementById("sHarga")
+.innerHTML =
+"Rp" +
+selectedHarga.toLocaleString("id-ID");
+
+document.getElementById("sGame")
+.innerHTML =
+selectedGame;
+
+document.getElementById("sDM")
+.innerHTML =
+selectedDM + " DM";
+
+document.getElementById("sPay")
+.innerHTML =
+selectedPay;
+
+document.getElementById("sPlayer")
+.innerHTML =
+document.getElementById("playerName").value || "Player";
+
+document.getElementById("sId")
+.innerHTML =
+document.getElementById("playerId").value || "00000";
+
+document.getElementById("sTrx")
+.innerHTML =
+"#TRX" +
+Math.floor(Math.random()*99999999);
+
+saveHistory(
+selectedGame + " " +
+selectedDM + "DM"
+);
+
+sound();
+
+}
+
+/* CLOSE */
+
+function closeSuccess(){
+
+document.getElementById("successPage")
+.style.display = "none";
+
+}
+
+/* TRANSFER */
+
+function fakeTransfer(){
+
+let nama =
+document.getElementById("tfNama").value;
+
+let nominal =
+document.getElementById("tfNominal").value;
+
+alert(
+"Transfer Rp" +
+nominal +
+" ke " +
+nama +
+" berhasil"
+);
+
+saveHistory(
+"Transfer " +
+selectedBank +
+" Rp" +
+nominal
+);
+
+sound();
+
+}
+
+/* HISTORY */
+
+function saveHistory(text){
+
+let div =
+document.createElement("div");
+
+div.className = "history";
+
+div.innerHTML =
+text + "<br>" +
+new Date().toLocaleString();
+
+document.getElementById("historyList")
+.prepend(div);
+
+}
+
+/* PROFILE */
+
+function changePhoto(e){
+
+const file = e.target.files[0];
+
+if(file){
+
+document.getElementById("profileImg")
+.src =
+URL.createObjectURL(file);
+
+}
+
+}
+
+function saveProfile(){
+
+alert("Profil disimpan");
+
+sound();
+
+}
+
+/* DAILY */
+
+function claimDaily(){
+
+let bonus =
+Math.floor(Math.random()*50000)+10000;
+
+saldo += bonus;
+
+updateSaldo();
+
+document.getElementById("popup")
+.style.display = "block";
+
+setTimeout(()=>{
+
+document.getElementById("popup")
+.style.display = "none";
+
+},3000);
+
+sound();
+
+}
+
+/* SLOT */
+
+const symbols = [
+"🀄",
+"🎴",
+"💎",
+"🔥",
+"🍀"
+];
+
+function renderSlot(){
+
+let html = "";
+
+for(let i=0;i<15;i++){
+
+let random =
+symbols[
+Math.floor(Math.random()*symbols.length)
+];
+
+html += `
+<div class="slot">
+${random}
+</div>
+`;
+
+}
+
+document.getElementById("slotArea")
+.innerHTML = html;
+
+}
+
+renderSlot();
+
+function spinSlot(){
+
+if(saldo < 1000){
+
+alert("Saldo habis");
+return;
+
+}
+
+saldo -= 1000;
+
+let win =
+Math.random() > 0.5;
+
+if(win){
+
+let hadiah =
+Math.floor(Math.random()*20000)+5000;
+
+saldo += hadiah;
+
+alert(
+"🎉 MENANG Rp" +
+hadiah.toLocaleString("id-ID")
+);
+
+}else{
+
+alert("❌ ZONK");
+
+}
+
+updateSaldo();
+
+renderSlot();
+
+sound();
+
+}
+
+/* SOUND */
+
+function sound(){
+
+const audio =
+new Audio(
+"https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a73467.mp3"
+);
+
+audio.volume = 0.2;
+
+audio.play();
+
+}
+
+</script>
+
+</body>
+</html>
